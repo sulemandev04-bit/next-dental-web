@@ -1,34 +1,57 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { Menu, X, LogOut, Calendar } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
-import { useRouter } from 'next/navigation';
-
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { Menu, X, LogOut, Calendar } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 const Navbar = () => {
-  const router = useRouter()
-   const [isOpen, setIsOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean |null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const fetchSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (mounted) setIsLoggedIn(!!data.session);
+    };
+
+    fetchSession();
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (mounted) setIsLoggedIn(!!session);
+    });
+
+    return () => {
+      mounted = false;
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/");
+  };
+
+  if (isLoggedIn === null) return null; // prevent flicker
 
   const toggleMenu = () => setIsOpen(!isOpen);
-
 
   return (
     <nav className="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20 items-center">
-          
-          {/* Logo Section */}
+          {/* Logo */}
           <div className="shrink-0 flex items-center gap-2">
-            <div className="bg-blue-600 p-2 rounded-lg">
-            </div>
+            <div className="bg-blue-600 p-2 rounded-lg"></div>
             <span className="text-2xl font-bold text-slate-800 tracking-tight">
               Bright<span className="text-blue-600">Smile</span>
             </span>
           </div>
 
-          {/* Desktop Navigation */}
+          {/* Desktop */}
           <div className="hidden md:flex items-center space-x-8">
             {!isLoggedIn ? (
               <>
@@ -44,8 +67,8 @@ const Navbar = () => {
                 </Link>
               </>
             ) : (
-              <button 
-            
+              <button
+                onClick={handleLogout}
                 className="flex items-center gap-2 text-gray-600 hover:text-red-600 font-medium transition-colors border border-gray-200 px-4 py-2 rounded-lg hover:border-red-100"
               >
                 <LogOut size={18} /> Logout
@@ -53,7 +76,7 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile */}
           <div className="md:hidden flex items-center">
             <button onClick={toggleMenu} className="text-gray-600 hover:text-blue-600 focus:outline-none">
               {isOpen ? <X size={28} /> : <Menu size={28} />}
@@ -62,7 +85,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Navigation Drawer */}
+      {/* Mobile Drawer */}
       {isOpen && (
         <div className="md:hidden bg-white border-t border-gray-100 animate-in slide-in-from-top duration-300">
           <div className="px-4 pt-4 pb-6 space-y-3 shadow-xl">
@@ -79,7 +102,7 @@ const Navbar = () => {
               </>
             ) : (
               <button 
-                onClick={() => setIsLoggedIn(false)}
+                onClick={handleLogout}
                 className="w-full flex items-center justify-center gap-2 text-red-600 bg-red-50 py-3 rounded-xl font-bold"
               >
                 <LogOut size={18} /> Logout

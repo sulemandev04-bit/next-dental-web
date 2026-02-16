@@ -111,7 +111,7 @@ export default function DentalDashboard() {
         </div>
 
         {/* Data Table */}
-        <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border overflow-x-auto">
           <table className="w-full text-left">
             <thead className="bg-blue-700 text-white border-b">
               <tr>

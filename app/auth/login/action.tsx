@@ -17,6 +17,6 @@ export default async function handleLogin(formData: FormData) {
   if (error) {
      return { success: false, error: "Invalid email or password." };
   } else {
-    redirect("/dashboard") 
+    redirect("/") 
   }
 }
