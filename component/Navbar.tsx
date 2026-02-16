@@ -69,11 +69,12 @@ const Navbar = () => {
             {!isLoggedIn ? (
               <>
                 <Link href="/" className="block px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md">Home</Link>
-                <Link href="/about" className="block px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md">About Us</Link>
-                <Link href="/contact" className="block px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md">Contact Us</Link>
+                <Link href="/aboutus" className="block px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md">About Us</Link>
+                <Link href="/contactus" className="block px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md">Contact Us</Link>
+                <Link href="/services" className="block px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md">Services</Link>
                 <div className="pt-4 flex flex-col gap-3">
-                  <Link href="/booking" className="w-full text-center bg-blue-50 text-blue-600 py-3 rounded-xl font-bold">Book Appointment</Link>
-                  <Link href="/login" className="w-full text-center bg-blue-600 text-white py-3 rounded-xl font-bold shadow-lg">Login</Link>
+                  <Link href="/appointment" className="w-full text-center bg-blue-50 text-blue-600 py-3 rounded-xl font-bold">Book Appointment</Link>
+                  <Link href="/auth/login" className="w-full text-center bg-blue-600 text-white py-3 rounded-xl font-bold shadow-lg">Login</Link>
                 </div>
               </>
             ) : (
