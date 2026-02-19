@@ -23,7 +23,6 @@ export default async function DashboardPage() {
   return (
     <main className="min-h-screen bg-gray-50 py-10">
       <div className="max-w-5xl mx-auto px-4">
-        <h1 className="text-2xl font-bold mb-8 ml-5 text-blue-600">Clinic Analytics</h1>
         <AppointmentDashboard data={chartData} />
       </div>
     </main>

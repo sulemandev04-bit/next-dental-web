@@ -1,17 +1,26 @@
-
 "use client";
+import React, { useState, useEffect } from 'react';
+import { createClient } from '@supabase/supabase-js';
+import { Menu, X, LayoutDashboard, Calendar, PlusCircle, DollarSign, LogOut, BarChart } from 'lucide-react';
+import Link from 'next/link';
+import { useSearchParams, useRouter } from 'next/navigation'; // Added useRouter to close popup
+
+import useHandleUpdate from '@/component/HandelUpdate';
+import AsideBar from '@/component/AsidBar';
+
 interface Appointment {
   id: string;
   name: string;
   email: string;
   dob: Date;
   service: string;
-  slot:string;
-  notes:string;
-  date:Date;
-  status:string;
-  amount:string;
+  slot: string;
+  notes: string;
+  date: Date;
+  status: string;
+  amount: string;
 }
+
 type Appointment2 = {
   id: string;
   status: string;
@@ -20,17 +29,6 @@ type Appointment2 = {
   date?: string;
 };
 
-
-import React, { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
-import { Menu, X, LayoutDashboard, Calendar, PlusCircle, DollarSign, LogOut,BarChart } from 'lucide-react';
-import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-
-import useHandleUpdate from '@/component/HandelUpdate';
-import AsideBar from '@/component/AsidBar';
-
-
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 
 export default function AddClientAmount() {
@@ -38,17 +36,27 @@ export default function AddClientAmount() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const searchParams = useSearchParams();
+  const router = useRouter(); // To handle closing the popup
   const editId = searchParams.get("edit");
   const handleUpdate = useHandleUpdate();
 
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment2|null>(null);
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment2 | null>(null);
+
+  // Close popup function
+  const closePopup = () => {
+    setSelectedAppointment(null);
+    router.push('/addAmount'); // Clears the ?edit=id from URL
+  };
 
   useEffect(() => {
-    if (!editId) return;
+    if (!editId) {
+      setSelectedAppointment(null);
+      return;
+    }
 
     const fetchAppointment = async () => {
       const { data, error } = await supabase
-        .from("appointment") // table name check karein
+        .from("appointment")
         .select("*")
         .eq("id", editId)
         .single();
@@ -62,7 +70,6 @@ export default function AddClientAmount() {
 
     fetchAppointment();
   }, [editId]);
- 
 
   useEffect(() => {
     fetchData();
@@ -72,13 +79,11 @@ export default function AddClientAmount() {
     const { data, error } = await supabase
       .from('appointment')
       .select('*')
-      .eq("status", "Pending")
+      .eq("status", "Pending");
 
     if (data) {
       setAppointments(data);
-      
     }
-    
   }
 
   useEffect(() => {
@@ -89,67 +94,93 @@ export default function AddClientAmount() {
     const { data, error } = await supabase
       .from('appointment')
       .select('*')
-      .eq("date", selectedDate)
+      .eq("date", selectedDate);
 
     if (data) {
-     setAppointments(data);
-      
+      setAppointments(data);
     }
-    
   }
 
   return (
     <div className="flex h-screen bg-gray-50 text-slate-900">
-    <AsideBar/>
+      <AsideBar />
 
-      {/* Main Content */}
       <main className="flex-1 lg:ml-64 p-4 lg:p-8 overflow-y-auto">
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <h1 className="text-2xl font-bold">Amount Overview</h1>
-          <input 
-            type="date" 
+          <input
+            type="date"
             className="p-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 outline-none"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
           />
         </header>
 
-        <div>
-    
-
-        {/* Form show only if editId exists */}
+        {/* POPUP MODAL SECTION */}
         {selectedAppointment && (
-            <form onSubmit={handleUpdate} className="space-y-4 mb-10">
-            <input
-                type="hidden"
-                name="id"
-                value={selectedAppointment.id}
-            />
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Dark Overlay Background */}
+            <div 
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm" 
+              onClick={closePopup}
+            ></div>
 
-            <input
-                type="number"
-                name="amount"
-                placeholder="Enter Amount"
-                className="border p-2 w-full"
-                defaultValue={selectedAppointment.amount || ""}
-            />
+            {/* Modal Box */}
+            <div className="relative bg-white w-full max-w-md rounded-xl shadow-2xl p-6 overflow-hidden">
+              <div className="flex justify-between items-center mb-6 border-b pb-4">
+                <h2 className="text-xl font-bold text-blue-700">Update Amount</h2>
+                <button onClick={closePopup} className="text-gray-400 hover:text-gray-600">
+                  <X size={24} />
+                </button>
+              </div>
 
-            <select
-                name="status"
-                className="border p-2 w-full"
-                defaultValue={selectedAppointment.status}
-            >
-                <option value="pending">Pending</option>
-                <option value="completed">Completed</option>
-            </select>
+              <form onSubmit={handleUpdate} className="space-y-4">
+                <input
+                  type="hidden"
+                  name="id"
+                  value={selectedAppointment.id}
+                />
 
-            <button className="bg-green-500 text-white px-4 py-2 rounded">
-                Update
-            </button>
-            </form>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Enter Amount</label>
+                  <input
+                    type="number"
+                    name="amount"
+                    placeholder="Enter Amount"
+                    className="border p-2 w-full rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    defaultValue={selectedAppointment.amount || ""}
+                    autoFocus
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                  <select
+                    name="status"
+                    className="border p-2 w-full rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                    defaultValue={selectedAppointment.status}
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="completed">Completed</option>
+                  </select>
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <button 
+                    type="button"
+                    onClick={closePopup}
+                    className="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-200"
+                  >
+                    Cancel
+                  </button>
+                  <button className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                    Update Entry
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         )}
-    </div>
-    
 
         {/* Data Table */}
         <div className="bg-white rounded-xl shadow-sm border overflow-x-auto">
@@ -165,8 +196,7 @@ export default function AddClientAmount() {
                 <th className="p-4 font-semibold text-sm">Date</th>
                 <th className="p-4 font-semibold text-sm">Status</th>
                 <th className="p-4 font-semibold text-sm">Amount</th>
-                <th className="p-4 font-semibold text-sm">Action</th>
-                
+                <th className="p-4 font-semibold text-sm text-center">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -179,25 +209,23 @@ export default function AddClientAmount() {
                   <td className="p-4 font-medium">{apt.slot}</td>
                   <td className="p-4 font-medium">{apt.notes}</td>
                   <td className="p-4 font-medium">{apt.date}</td>
-                  <td className="p-4 font-medium">{apt.status}</td>
-                  <td className="p-4 font-medium">{apt.amount}</td>
-                  <td className="p-4 font-medium"><Link href={`/addAmount?edit=${apt.id}`} className='text-blue-700 hover:text-blue-500'>Add Amount</Link></td>
-                  
+                  <td className="p-4 font-medium">
+                    <span className={`px-2 py-1 rounded text-xs ${apt.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                      {apt.status}
+                    </span>
+                  </td>
+                  <td className="p-4 font-medium">₹{apt.amount || 0}</td>
+                  <td className="p-4 font-medium text-center">
+                    <Link href={`/addAmount?edit=${apt.id}`} className='bg-blue-50 text-blue-700 px-3 py-1 rounded-md hover:bg-blue-700 hover:text-white transition-all text-sm font-semibold'>
+                      Add Amount
+                    </Link>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </main>
-    </div>
-  );
-}
-
-// Sub-components
-function NavItem({ icon, label, active = false }: any) {
-  return (
-    <div className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition ${active ? 'bg-blue-50 text-blue-600' : 'text-gray-500 hover:bg-gray-100'}`}>
-      {icon} <span className="font-medium">{label}</span>
     </div>
   );
 }
