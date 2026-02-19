@@ -2,6 +2,7 @@
 "use server"
 
 import { supabase } from '@/lib/supabase';
+import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation'
 
 export default async function handleLogin(formData: FormData) {
@@ -16,7 +17,9 @@ export default async function handleLogin(formData: FormData) {
   // Logic: Check database for user
   if (error) {
      return { success: false, error: "Invalid email or password." };
-  } else {
-    redirect("/dashboard") 
   }
+
+  revalidatePath('/', 'layout')
+  redirect("/dashboard")
+  
 }

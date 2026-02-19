@@ -2,6 +2,7 @@
 "use server"
 
 import { supabase } from "@/lib/supabase";
+import { redirect } from "next/navigation";
 
 export default async function handleRegistration(formData: FormData) {
   const email = formData.get("email") as string;
@@ -17,7 +18,7 @@ export default async function handleRegistration(formData: FormData) {
     email,
     password
   })
-
-  console.log("New User Registered:", email);
-  return { success: true };
+  redirect("/dashboard")
+  
+  
 }

@@ -49,7 +49,6 @@ export default function RegistrationPage() {
           </div>
           <h2 className="text-2xl font-bold text-slate-800">Welcome to DentalWeb!</h2>
           <p className="text-slate-600 mt-2">Your account has been created.</p>
-          <Link href={"/auth/login"} className="mt-60 p-5 w-full py-3 bg-slate-900 text-white rounded-xl font-semibold"> Go To Login</Link>
         </div>
       </div>
     );

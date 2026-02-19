@@ -1,34 +1,31 @@
+import AppointmentDashboard from "@/component/AppointmentChart"; // Path check karein
+import { supabase } from "@/lib/supabase";
 
-import { supabase } from '@/lib/supabase';
-import AppointmentBarChart from '@/component/AppointmentBarChart';
-
-export default async function Page() {
-  // Fetch data on the server
-  const { data: appointments } = await supabase
+export default async function DashboardPage() {
+  // Fetch data
+  const { data: appointments, error } = await supabase
     .from('appointment')
-    .select('date')
+    .select('service, amount, date')
     .order('date', { ascending: true });
 
-  // Simple aggregation: { "2026-02-14": 5, "2026-02-15": 3 }
-  const safeAppointments = appointments ?? [];
+  if (error) {
+    return <div className="p-10 text-red-500">Error: {error.message}</div>;
+  }
 
-  const chartData = safeAppointments.reduce((acc:Record<string, number>, curr) => {
-    const date = curr.date.split('T')[0]; // Get YYYY-MM-DD
-    acc[date] = (acc[date] || 0) + 1;
-    return acc;
-  }, {});
-
-  const formattedData = Object.entries(chartData).map(([date, count]) => ({
-    date,
-    count,
+  // Clean data
+  const chartData = (appointments || []).map((item: any) => ({
+    date: item.date ? new Date(item.date).toLocaleDateString() : 'N/A',
+    service: item.service || 'N/A',
+    amount: Number(item.amount) || 0,
+    patients: 1, // Agar column nahi hai toh default 1
   }));
 
   return (
-    <div className="p-4 md:p-8">
-      <h1 className="text-2xl font-bold mb-6">Patient Volume</h1>
-      <div className="h-100 w-full bg-white rounded-xl shadow-sm border p-4">
-        <AppointmentBarChart data={formattedData} />
+    <main className="min-h-screen bg-gray-50 py-10">
+      <div className="max-w-5xl mx-auto px-4">
+        <h1 className="text-2xl font-bold mb-8 ml-5 text-blue-600">Clinic Analytics</h1>
+        <AppointmentDashboard data={chartData} />
       </div>
-    </div>
+    </main>
   );
 }
