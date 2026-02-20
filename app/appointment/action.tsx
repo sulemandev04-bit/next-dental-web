@@ -2,6 +2,7 @@
 "use server"
 
 import { supabase } from "@/lib/supabase";
+import { revalidatePath } from "next/cache";
 
 export default async function bookAppointment(formData: FormData) {
   // Extract data
@@ -27,5 +28,6 @@ export default async function bookAppointment(formData: FormData) {
 
 
   // In a real app, you would use revalidatePath('/') or redirect('/')
+  revalidatePath("/dashboard");
   return { success: true, message: "Appointment requested successfully!" };
 }

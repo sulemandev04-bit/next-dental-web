@@ -111,7 +111,7 @@ export default function DentalDashboard() {
                   <td className="p-4 font-medium">{apt.notes}</td>
                   <td className="p-4 font-medium">{apt.date}</td>
                   <td className="p-4 font-medium">{apt.status}</td>
-                  <td className="p-4 font-medium">{apt.amount}</td>
+                  <td className="p-4 font-medium text-center">₹ {apt.amount || 0}</td>
                   
                 </tr>
               ))}

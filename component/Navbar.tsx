@@ -59,7 +59,7 @@ const Navbar = () => {
                 <Link href="/aboutus" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">About Us</Link>
                 <Link href="/contactus" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">Contact Us</Link>
                 <Link href="/services" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">Services</Link>
-                <Link href="/appointment" className="bg-blue-50 text-blue-600 px-5 py-2 rounded-full font-semibold hover:bg-blue-100 transition-all flex items-center gap-2">
+                <Link href="/auth/login" className="bg-blue-50 text-blue-600 px-5 py-2 rounded-full font-semibold hover:bg-blue-100 transition-all flex items-center gap-2">
                   <Calendar size={18} /> Book Appointment
                 </Link>
                 <Link href="/auth/login" className="bg-blue-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-blue-700 shadow-md hover:shadow-lg transition-all">

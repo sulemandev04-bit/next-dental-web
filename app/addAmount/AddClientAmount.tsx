@@ -107,7 +107,7 @@ export default function AddClientAmount() {
 
       <main className="flex-1 lg:ml-64 p-4 lg:p-8 overflow-y-auto">
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-          <h1 className="text-2xl font-bold">Amount Overview</h1>
+          <h1 className="text-2xl font-bold text-blue-600">Amount Overview</h1>
           <input
             type="date"
             className="p-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 outline-none"
@@ -214,7 +214,7 @@ export default function AddClientAmount() {
                       {apt.status}
                     </span>
                   </td>
-                  <td className="p-4 font-medium">₹{apt.amount || 0}</td>
+                  <td className="p-4 font-medium">₹ {apt.amount || 0}</td>
                   <td className="p-4 font-medium text-center">
                     <Link href={`/addAmount?edit=${apt.id}`} className='bg-blue-50 text-blue-700 px-3 py-1 rounded-md hover:bg-blue-700 hover:text-white transition-all text-sm font-semibold'>
                       Add Amount

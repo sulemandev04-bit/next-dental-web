@@ -51,7 +51,7 @@ export default function DentalDashboard() {
       {/* Main Content */}
       <main className="flex-1 lg:ml-64 p-4 lg:p-8 overflow-y-auto">
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-          <h1 className="text-2xl font-bold">Appointment Overview</h1>
+          <h1 className="text-2xl font-bold text-blue-600">Appointment Overview</h1>
         </header>
 
         {/* Data Table */}

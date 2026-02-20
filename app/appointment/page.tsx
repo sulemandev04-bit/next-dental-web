@@ -49,9 +49,9 @@ export default function AppointmentForm() {
 
   return (
     <div className="max-w-2xl mx-auto my-8 bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100">
-      
+      <AsideBar/>
       <div className="bg-slate-50 p-6 border-b border-slate-100 text-center">
-         <h2 className="text-2xl font-bold text-slate-800 mb-2">My DentalWeb</h2>
+         <h2 className="text-2xl font-bold text-blue-600 mb-2">My DentalWeb</h2>
          <p className="text-slate-500 text-sm">Fill out the details below to book your visit</p>
       </div>
 

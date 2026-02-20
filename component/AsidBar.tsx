@@ -31,6 +31,7 @@ export default function AsideBar() {
         <nav className="flex-1 px-4 space-y-2">
           <Link href={"/dashboard"}><NavItem icon={<LayoutDashboard size={20}/>} label="Dashboard" active = {pathname === "/dashboard"} /></Link>
           <Link href={"/viewAllAppointment"}><NavItem icon={<Calendar size={20}/>} label="View Appointments" active = {pathname === "/viewAllAppointment"} /></Link>
+          <Link href={"/appointment"}><NavItem icon={<PlusCircle size={20}/>} label="Create Appointment" active = {pathname === "/appointment"}/></Link>
           <Link href={"/addAmount"}><NavItem icon={<DollarSign size={20}/>} label="Add Amount" active = {pathname === "/addAmount"} /></Link>
           <Link href={"/graph"}><NavItem icon={<BarChart size={20}/>} label="Graph" active = {pathname === "/graph"}/></Link>
         </nav>
